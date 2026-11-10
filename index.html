@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyan">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.A.R.V.I.S. // Stark Industries Holographic AI Interface</title>
+  <meta name="description" content="Cinematic Iron Man J.A.R.V.I.S. Interactive AI Holographic HUD with Real-time Voice Recognition, Web Audio Synthesizer, and 60 FPS Arc Reactor Canvas.">
+
+  <!-- Futuristic Sci-Fi Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <!-- Single Unified HUD Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Single Unified Client Engine (Audio Synthesizer + Canvas Core + Speech Recognition) -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <!-- Background Quantum Grid & Starfield Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- High-Tech CRT Scanlines Overlay -->
+  <div class="scanlines-overlay" aria-hidden="true"></div>
+
+  <!-- Main 3D Holographic HUD Wrapper -->
+  <div class="jarvis-hud-container">
+
+    <!-- ====================================================================
+         1. TOP TELEMETRY & PROTOCOL HEADER
+         ==================================================================== -->
+    <header class="hud-header">
+      <div class="brand-section">
+        <div class="stark-insignia">
+          STARK <span>//</span> J.A.R.V.I.S.
+        </div>
+        <span class="protocol-tag">MARK LXXXV // SYSTEM VER 8.5</span>
+      </div>
+
+      <div class="header-status-group">
+        <div class="status-indicator">
+          <span class="status-pulse-dot"></span>
+          <span>SYSTEM ONLINE</span>
+        </div>
+
+        <!-- Color Theme Switcher -->
+        <div class="theme-switcher" title="Suit Color Configuration">
+          <button class="theme-btn theme-cyan active" data-theme="cyan" aria-label="Cyan Mark 85 Theme"></button>
+          <button class="theme-btn theme-crimson" data-theme="crimson" aria-label="Crimson Mark 3 Theme"></button>
+          <button class="theme-btn theme-emerald" data-theme="emerald" aria-label="Emerald Stealth Theme"></button>
+          <button class="theme-btn theme-amber" data-theme="amber" aria-label="Amber Alert Theme"></button>
+        </div>
+
+        <!-- Audio Mute Toggle Button -->
+        <button class="hud-btn-toggle" id="audio-mute-btn">AUDIO: ON</button>
+
+        <!-- Diagnostic Sweep Button -->
+        <button class="hud-btn-toggle" id="run-diag-btn">RUN DIAGNOSTIC</button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         2. MAIN 3-COLUMN TACTICAL HUD
+         ==================================================================== -->
+    <main class="hud-main-grid">
+
+      <!-- Left Panel: Core System Diagnostics -->
+      <aside class="hud-panel left-panel">
+        <div class="panel-header">
+          <span class="panel-title">SYSTEM DIAGNOSTICS</span>
+          <span class="panel-index">FIG. 01 // CORE</span>
+        </div>
+
+        <!-- Arc Reactor Output -->
+        <div class="telemetry-item">
+          <div class="telemetry-label-row">
+            <span>ARC CORE ENERGY</span>
+            <span class="telemetry-val" id="energy-val">3.2 GJ/s (STABLE)</span>
+          </div>
+          <div class="diag-bar-track">
+            <div class="diag-bar-fill" style="width: 92%;"></div>
+          </div>
+        </div>
+
+        <!-- Quantum Processing CPU -->
+        <div class="telemetry-item">
+          <div class="telemetry-label-row">
+            <span>QUANTUM CORE LOAD</span>
+            <span class="telemetry-val">48.2% // 128 CORES</span>
+          </div>
+          <div class="diag-bar-track">
+            <div class="diag-bar-fill" style="width: 48%;"></div>
+          </div>
+        </div>
+
+        <!-- Memory Allocation -->
+        <div class="telemetry-item">
+          <div class="telemetry-label-row">
+            <span>NEURAL MEMORY BUFFER</span>
+            <span class="telemetry-val">64.2 TB / 128 TB</span>
+          </div>
+          <div class="diag-bar-track">
+            <div class="diag-bar-fill" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Thermal Levels -->
+        <div class="telemetry-item">
+          <div class="telemetry-label-row">
+            <span>THERMAL RADIANCE</span>
+            <span class="telemetry-val">38.4° C // NOMINAL</span>
+          </div>
+          <div class="diag-bar-track">
+            <div class="diag-bar-fill" style="width: 38%;"></div>
+          </div>
+        </div>
+
+        <!-- Defensive Shields -->
+        <div class="telemetry-item" style="margin-bottom: 0;">
+          <div class="telemetry-label-row">
+            <span>FIREWALL INTEGRITY</span>
+            <span class="telemetry-val">100% // ENCRYPTED</span>
+          </div>
+          <div class="diag-bar-track">
+            <div class="diag-bar-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center: The Arc Reactor Holographic Core Visualizer -->
+      <section class="center-core-wrapper">
+        <div class="core-canvas-container" id="core-trigger-btn" title="Click Arc Reactor to Speak to Jarvis">
+          <canvas id="core-canvas"></canvas>
+        </div>
+
+        <div class="core-state-container">
+          <div class="state-badge state-idle" id="core-state-badge">IDLE</div>
+          <p class="core-click-hint">CLICK ARC REACTOR OR PRESS MIC TO COMMAND</p>
+        </div>
+      </section>
+
+      <!-- Right Panel: Global Telemetry & Quick Voice Commands -->
+      <aside class="hud-panel right-panel">
+        <div class="panel-header">
+          <span class="panel-title">TACTICAL COMMANDS</span>
+          <span class="panel-index">FIG. 02 // VOICE</span>
+        </div>
+
+        <!-- Coordinates Telemetry -->
+        <div class="telemetry-item">
+          <div class="telemetry-label-row">
+            <span>GEO SATELLITE LOCK</span>
+            <span class="telemetry-val">34.0259° N, 118.7798° W</span>
+          </div>
+          <div class="telemetry-label-row" style="margin-bottom: 0;">
+            <span>STARK MALIBU POINT</span>
+            <span class="telemetry-val">ALT: 42M // BARO: 1013 HPA</span>
+          </div>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-primary); margin-top: 1rem; margin-bottom: 0.5rem; letter-spacing: 0.1em;">
+          QUICK PROTOCOL SHORTCUTS:
+        </div>
+
+        <!-- Clickable quick commands (with sound effect + voice execution) -->
+        <div class="command-pills-list">
+          <button type="button" class="quick-command-pill" data-cmd="Hello Jarvis">"Hello Jarvis"</button>
+          <button type="button" class="quick-command-pill" data-cmd="System status">"System status"</button>
+          <button type="button" class="quick-command-pill" data-cmd="Open YouTube">"Open YouTube"</button>
+          <button type="button" class="quick-command-pill" data-cmd="Tell me an Iron Man quote">"Iron Man quote"</button>
+          <button type="button" class="quick-command-pill" data-cmd="Switch to crimson">"Switch to Crimson (Mark 3)"</button>
+          <button type="button" class="quick-command-pill" data-cmd="Tell me a joke">"Tell me a joke"</button>
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- ====================================================================
+         3. BOTTOM OSCILLOSCOPE WAVEFORM & TERMINAL INPUT CONSOLE
+         ==================================================================== -->
+    <footer class="hud-footer">
+      
+      <!-- Left: Audio Spectrum Waveform -->
+      <div class="waveform-card">
+        <div class="waveform-header">
+          <span>AUDIO FREQUENCY OSCILLOSCOPE</span>
+          <span>44.1 KHZ // 60 FPS</span>
+        </div>
+        <canvas id="wave-canvas"></canvas>
+      </div>
+
+      <!-- Right: Holographic Terminal Streamer & Input Bar -->
+      <div class="terminal-card">
+        <div class="terminal-logs" id="terminal-logs" role="log" aria-live="polite">
+          <!-- Terminal logs injected dynamically from script.js -->
+        </div>
+
+        <div class="command-input-row">
+          <input type="text" id="command-input" class="command-input" placeholder="> Enter voice command or type here (e.g. 'Open YouTube', 'System status')..." autocomplete="off">
+          
+          <button type="button" class="hud-btn mic-btn" id="mic-toggle-btn" title="Toggle Microphone Listening">
+            🎤
+          </button>
+          
+          <button type="button" class="hud-btn" id="send-command-btn">
+            EXECUTE ↗
+          </button>
+        </div>
+      </div>
+
+    </footer>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,693 @@
+/* ==============================================================================
+   J.A.R.V.I.S. SCI-FI HOLOGRAPHIC HUD STYLESHEET (style.css)
+   Aesthetic: Stark Industries Mark 85 Arc Reactor Holographic Interface
+   ============================================================================== */
+
+/* ------------------------------------------------------------------------------
+   1. RESET & DYNAMIC THEME VARIABLES
+   ------------------------------------------------------------------------------ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Default Theme: Mark 85 Cyan / Electric Ice Blue */
+  --color-primary: #00F2FE;
+  --color-secondary: #4FACFE;
+  --color-accent: #00FFE0;
+  --color-glow: rgba(0, 242, 254, 0.35);
+  --color-glow-strong: rgba(0, 242, 254, 0.75);
+  --color-faint: rgba(0, 242, 254, 0.12);
+  --color-border: rgba(0, 242, 254, 0.3);
+  
+  --bg-deep: #02050B;
+  --bg-surface: rgba(4, 12, 26, 0.65);
+  --bg-surface-elevated: rgba(6, 18, 38, 0.85);
+
+  --text-main: #E2F5FF;
+  --text-muted: #6B8BA4;
+  --text-dim: #3D5A72;
+
+  --font-display: 'Orbitron', -apple-system, sans-serif;
+  --font-hud: 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+
+  --ease-tech: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s var(--ease-tech);
+  --transition-normal: 0.35s var(--ease-tech);
+}
+
+/* Theme: Crimson & Gold (Mark 3 Iron Man Classic) */
+[data-theme="crimson"] {
+  --color-primary: #FF2A42;
+  --color-secondary: #FFB800;
+  --color-accent: #FFD700;
+  --color-glow: rgba(255, 42, 66, 0.35);
+  --color-glow-strong: rgba(255, 42, 66, 0.75);
+  --color-faint: rgba(255, 42, 66, 0.12);
+  --color-border: rgba(255, 42, 66, 0.35);
+  --bg-surface: rgba(26, 6, 8, 0.65);
+  --bg-surface-elevated: rgba(38, 8, 12, 0.85);
+  --text-main: #FFF0F2;
+  --text-muted: #A46B74;
+}
+
+/* Theme: Emerald Stealth */
+[data-theme="emerald"] {
+  --color-primary: #00FF9D;
+  --color-secondary: #00B865;
+  --color-accent: #7DFFC8;
+  --color-glow: rgba(0, 255, 157, 0.35);
+  --color-glow-strong: rgba(0, 255, 157, 0.75);
+  --color-faint: rgba(0, 255, 157, 0.12);
+  --color-border: rgba(0, 255, 157, 0.3);
+  --bg-surface: rgba(4, 26, 16, 0.65);
+  --bg-surface-elevated: rgba(6, 38, 24, 0.85);
+  --text-main: #E5FFF4;
+  --text-muted: #5DA480;
+}
+
+/* Theme: Overdrive Amber Alert */
+[data-theme="amber"] {
+  --color-primary: #FF9900;
+  --color-secondary: #FF5500;
+  --color-accent: #FFCC00;
+  --color-glow: rgba(255, 153, 0, 0.35);
+  --color-glow-strong: rgba(255, 153, 0, 0.75);
+  --color-faint: rgba(255, 153, 0, 0.12);
+  --color-border: rgba(255, 153, 0, 0.3);
+  --bg-surface: rgba(26, 16, 4, 0.65);
+  --bg-surface-elevated: rgba(38, 22, 6, 0.85);
+  --text-main: #FFF8E7;
+  --text-muted: #A4835D;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-hud);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fullscreen Background Canvas */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Subtle CRT Scanline overlay */
+.scanlines-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ------------------------------------------------------------------------------
+   2. MAIN HUD LAYOUT
+   ------------------------------------------------------------------------------ */
+.jarvis-hud-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem 2rem 1.75rem;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+/* ------------------------------------------------------------------------------
+   3. TOP NAVIGATION HEADER & TELEMETRY BAR
+   ------------------------------------------------------------------------------ */
+.hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 0 12px var(--color-faint);
+  position: relative;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stark-insignia {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 10px var(--color-glow-strong);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stark-insignia span {
+  color: var(--color-accent);
+}
+
+.protocol-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  background: var(--color-faint);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  letter-spacing: 0.1em;
+}
+
+.header-status-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-accent);
+}
+
+.status-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+  animation: pulse-glow 1.8s infinite;
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 16px var(--color-primary); }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* Theme Switcher Buttons */
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-btn.theme-cyan { background-color: #00F2FE; }
+.theme-btn.theme-crimson { background-color: #FF2A42; }
+.theme-btn.theme-emerald { background-color: #00FF9D; }
+.theme-btn.theme-amber { background-color: #FF9900; }
+
+.theme-btn:hover,
+.theme-btn.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 12px currentColor;
+  border-color: #FFFFFF;
+}
+
+.hud-btn-toggle {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hud-btn-toggle:hover {
+  background: var(--color-primary);
+  color: #000;
+  box-shadow: 0 0 15px var(--color-glow);
+}
+
+/* ------------------------------------------------------------------------------
+   4. MIDDLE INTERFACE: 3-COLUMN TACTICAL HUD
+   ------------------------------------------------------------------------------ */
+.hud-main-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 320px;
+  gap: 2rem;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+/* Tactical Glass Panels */
+.hud-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px var(--color-faint);
+  position: relative;
+}
+
+/* Sci-fi Corner Brackets */
+.hud-panel::before,
+.hud-panel::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--color-primary);
+  pointer-events: none;
+}
+
+.hud-panel::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--color-primary);
+  border-left: 2px solid var(--color-primary);
+}
+
+.hud-panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--color-primary);
+  border-right: 2px solid var(--color-primary);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-glow);
+}
+
+.panel-index {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* Telemetry Items */
+.telemetry-item {
+  margin-bottom: 1.25rem;
+}
+
+.telemetry-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  margin-bottom: 0.35rem;
+  color: var(--text-muted);
+}
+
+.telemetry-val {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+.diag-bar-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.diag-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+  box-shadow: 0 0 10px var(--color-primary);
+  border-radius: 3px;
+  transition: width 0.6s var(--ease-tech);
+}
+
+/* Quick Voice Commands Pills */
+.command-pills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.quick-command-pill {
+  padding: 0.55rem 0.85rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all var(--transition-fast);
+}
+
+.quick-command-pill:hover {
+  background: var(--color-primary);
+  color: #000;
+  border-color: var(--color-primary);
+  transform: translateX(4px);
+  box-shadow: 0 0 15px var(--color-glow);
+}
+
+.quick-command-pill::after {
+  content: "▶";
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+
+/* ------------------------------------------------------------------------------
+   5. CENTER: THE ARC REACTOR CORE VISUALIZER
+   ------------------------------------------------------------------------------ */
+.center-core-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.core-canvas-container {
+  position: relative;
+  width: 440px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#core-canvas {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 25px var(--color-glow-strong));
+  transition: transform var(--transition-normal);
+}
+
+.core-canvas-container:hover #core-canvas {
+  transform: scale(1.02);
+}
+
+/* State Badge Beneath Core */
+.core-state-container {
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+.state-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  color: var(--color-primary);
+  text-shadow: 0 0 12px var(--color-glow-strong);
+  padding: 0.35rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  background: var(--bg-surface);
+  box-shadow: inset 0 0 10px var(--color-faint);
+  transition: all var(--transition-normal);
+}
+
+.state-badge.state-listening {
+  color: #00FF9D;
+  border-color: #00FF9D;
+  text-shadow: 0 0 15px #00FF9D;
+  animation: blink-border 1.2s infinite;
+}
+
+.state-badge.state-speaking {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  text-shadow: 0 0 20px var(--color-accent);
+}
+
+@keyframes blink-border {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.core-click-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+/* ------------------------------------------------------------------------------
+   6. BOTTOM: OSCILLOSCOPE WAVEFORM & TERMINAL INPUT CONSOLE
+   ------------------------------------------------------------------------------ */
+.hud-footer {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Oscilloscope Canvas Card */
+.waveform-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.waveform-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+#wave-canvas {
+  width: 100%;
+  height: 90px;
+}
+
+/* Terminal Console & Command Input Card */
+.terminal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  position: relative;
+}
+
+.terminal-logs {
+  height: 100px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  padding-right: 0.5rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.terminal-logs::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terminal-logs::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.terminal-line.line-sys { color: var(--color-secondary); }
+.terminal-line.line-user { color: #FFFFFF; font-weight: bold; }
+.terminal-line.line-jarvis { color: var(--color-accent); text-shadow: 0 0 6px var(--color-glow); }
+.terminal-line.line-err { color: #FF4A4A; }
+
+.time-stamp {
+  color: var(--text-dim);
+  margin-right: 0.35rem;
+}
+
+/* Command Input Bar */
+.command-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.command-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-main);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.command-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-glow);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hud-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all var(--transition-fast);
+}
+
+.hud-btn:hover {
+  background: var(--color-primary);
+  color: #000;
+  box-shadow: 0 0 16px var(--color-glow);
+}
+
+.mic-btn {
+  width: 40px;
+  padding: 0.65rem 0;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.mic-btn.active {
+  background: #00FF9D;
+  color: #000;
+  border-color: #00FF9D;
+  box-shadow: 0 0 18px #00FF9D;
+  animation: pulse-mic 1.2s infinite;
+}
+
+@keyframes pulse-mic {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* ------------------------------------------------------------------------------
+   7. RESPONSIVENESS (MOBILE & TABLET VIEWPORTS)
+   ------------------------------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .hud-main-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .center-core-wrapper {
+    order: -1;
+  }
+
+  .core-canvas-container {
+    width: 320px;
+    height: 320px;
+  }
+
+  .hud-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .jarvis-hud-container {
+    padding: 0.75rem 1rem;
+  }
+
+  .hud-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .header-status-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .core-canvas-container {
+    width: 260px;
+    height: 260px;
+  }
+
+  .command-input-row {
+    flex-wrap: wrap;
+  }
+
+  .command-input {
+    width: 100%;
+  }
+}
