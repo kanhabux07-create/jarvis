@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>J.A.R.V.I.S</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="scan"></div>
+<header>
+  <div class="pill" id="clock">00:00:00</div>
+  <h1>J.A.R.V.I.S <small id="hello">SYSTEM ONLINE</small></h1>
+  <div class="pill" id="date">--</div>
+</header>
+
+<main>
+  <aside>
+    <section class="box">
+      <h3>WEATHER</h3>
+      <div class="temp" id="temp">--°C</div>
+      <div class="dim" id="wdesc">SCANNING...</div>
+    </section>
+    <section class="box"><h3>SYSTEM</h3><div id="sys"></div></section>
+    <section class="box"><h3>NETWORK TRAFFIC</h3><canvas id="line"></canvas></section>
+  </aside>
+
+  <section class="stage">
+    <div class="ring r1"></div><div class="ring r2"></div>
+    <div class="ring r3"></div><div class="ring r4"></div>
+    <canvas id="globe"></canvas>
+    <div class="status" id="status">ALL SYSTEMS NOMINAL</div>
+  </section>
+
+  <aside>
+    <section class="box"><h3>GLOBAL MAP</h3><canvas id="map"></canvas></section>
+    <section class="box"><h3>DATA BARS</h3><div id="bars"></div></section>
+    <section class="box">
+      <h3>COUNTERS</h3>
+      <div class="big" id="count">232,425</div>
+      <div class="dim">ACTIVE NODES <span class="up" id="growth">▲ 150%</span></div>
+    </section>
+  </aside>
+</main>
+
+<footer>
+  <span>CPU TEMP <b id="ftemp">42°C</b></span>
+  <span>FAN <b id="ffan">1200 RPM</b></span>
+  <span>UPTIME <b id="up">00:00:00</b></span>
+  <span>CORES <b id="cores">--</b></span>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
